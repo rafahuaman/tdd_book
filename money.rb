@@ -3,28 +3,28 @@ require 'purdytest'
 
 class MoneyTest < MiniTest::Unit::TestCase 
 	def	test_multiplication
-		five = Dollar.new(5)
-		assert_equal Dollar.new(10), five.times(2)
-		assert_equal Dollar.new(15), five.times(3)
+		five = Money.dollar(5)
+		assert_equal Money.dollar(10), five.times(2)
+		assert_equal Money.dollar(15), five.times(3)
 	end
 
 	def test_equality
-		assert Dollar.new(5).equals(Dollar.new(5))
-		refute Dollar.new(5).equals(Dollar.new(6))
-		assert Franc.new(5).equals(Franc.new(5))
-		refute Franc.new(5).equals(Franc.new(6))
-		refute Franc.new(5).equals(Dollar.new(5))
+		assert Money.dollar(5).equals(Money.dollar(5))
+		refute Money.dollar(5).equals(Money.dollar(6))
+		assert Money.franc(5).equals(Money.franc(5))
+		refute Money.franc(5).equals(Money.franc(6))
+		refute Money.franc(5).equals(Money.dollar(5))
 	end
 
 	def test_#==
-	  assert Dollar.new(5) == (Dollar.new(5))
-	  refute Dollar.new(5) == (Dollar.new(6))
+	  assert Money.dollar(5) == (Money.dollar(5))
+	  refute Money.dollar(5) == (Money.dollar(6))
 	end
 
 	def test_franc_multiplication
-		five = Franc.new(5)
-		assert_equal Franc.new(10), five.times(2)
-		assert_equal Franc.new(15), five.times(3)
+		five = Money.franc(5)
+		assert_equal Money.franc(10), five.times(2)
+		assert_equal Money.franc(15), five.times(3)
 	end
 end
 
@@ -33,6 +33,14 @@ class Money
 
 	def initialize(amount)
 		@amount = amount
+	end
+
+	def self.dollar(amount)
+		Dollar.new(amount)
+	end
+
+	def self.franc(amount)
+		Franc.new(amount)
 	end
 	
 	def ==(object)
