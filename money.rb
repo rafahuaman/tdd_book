@@ -13,6 +13,7 @@ class MoneyTest < MiniTest::Unit::TestCase
 		refute Dollar.new(5).equals(Dollar.new(6))
 		assert Franc.new(5).equals(Franc.new(5))
 		refute Franc.new(5).equals(Franc.new(6))
+		refute Franc.new(5).equals(Dollar.new(5))
 	end
 
 	def test_#==
@@ -35,7 +36,7 @@ class Money
 	end
 	
 	def ==(object)
-		@amount == object.amount
+		@amount == object.amount and self.class.name == object.class.name
 	end
 	alias :equals :==
 end
