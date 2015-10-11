@@ -26,21 +26,27 @@ class MoneyTest < MiniTest::Unit::TestCase
 		assert_equal Money.franc(10), five.times(2)
 		assert_equal Money.franc(15), five.times(3)
 	end
+
+	def test_currency
+		assert_equal 'USD', Money.dollar(1).currency()
+		assert_equal 'CHF', Money.franc(1).currency()
+	end
 end
 
 class Money
-	attr_reader :amount
-
-	def initialize(amount)
+	attr_reader :amount, :currency
+	
+	def initialize(amount, currency)
 		@amount = amount
+		@currency = currency
 	end
 
 	def self.dollar(amount)
-		Dollar.new(amount)
+		Dollar.new(amount, 'USD')
 	end
 
 	def self.franc(amount)
-		Franc.new(amount)
+		Franc.new(amount, 'CHF')
 	end
 	
 	def ==(object)
@@ -51,12 +57,12 @@ end
 
 class Dollar < Money
 	def times(multiplier)
-		Dollar.new(@amount*multiplier)
+		Money.dollar(@amount*multiplier)
 	end
 end
 
 class Franc < Money
 	def times(multiplier)
-		Franc.new(@amount*multiplier)
+		Money.franc(@amount*multiplier)
 	end
 end
