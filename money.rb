@@ -31,6 +31,10 @@ class MoneyTest < MiniTest::Unit::TestCase
 		assert_equal 'USD', Money.dollar(1).currency()
 		assert_equal 'CHF', Money.franc(1).currency()
 	end
+
+	def test_different_class_equality
+		assert Money.new(10,'CHF') == Franc.new(10, 'CHF')
+	end
 end
 
 class Money
@@ -50,19 +54,17 @@ class Money
 	end
 	
 	def ==(object)
-		@amount == object.amount and self.class.name == object.class.name
+		@amount == object.amount and @currency == object.currency
 	end
 	alias :equals :==
+	
+	def times(multiplier)
+		Money.new(@amount*multiplier, @currency)
+	end
 end
 
 class Dollar < Money
-	def times(multiplier)
-		Money.dollar(@amount*multiplier)
-	end
 end
 
 class Franc < Money
-	def times(multiplier)
-		Money.franc(@amount*multiplier)
-	end
 end
