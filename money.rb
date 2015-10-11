@@ -11,6 +11,8 @@ class MoneyTest < MiniTest::Unit::TestCase
 	def test_equality
 		assert Dollar.new(5).equals(Dollar.new(5))
 		refute Dollar.new(5).equals(Dollar.new(6))
+		assert Franc.new(5).equals(Franc.new(5))
+		refute Franc.new(5).equals(Franc.new(6))
 	end
 
 	def test_#==
@@ -25,37 +27,27 @@ class MoneyTest < MiniTest::Unit::TestCase
 	end
 end
 
-
-class Dollar
+class Money
 	attr_reader :amount
 
 	def initialize(amount)
 		@amount = amount
 	end
-
-	def times(multiplier)
-		Dollar.new(@amount*multiplier)
-	end
-
+	
 	def ==(object)
 		@amount == object.amount
 	end
 	alias :equals :==
 end
 
-class Franc
-	attr_reader :amount
-
-	def initialize(amount)
-		@amount = amount
+class Dollar < Money
+	def times(multiplier)
+		Dollar.new(@amount*multiplier)
 	end
+end
 
+class Franc < Money
 	def times(multiplier)
 		Franc.new(@amount*multiplier)
 	end
-
-	def ==(object)
-		@amount == object.amount
-	end
-	alias :equals :==
 end
