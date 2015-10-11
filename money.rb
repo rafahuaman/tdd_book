@@ -11,8 +11,6 @@ class MoneyTest < MiniTest::Unit::TestCase
 	def test_equality
 		assert Money.dollar(5).equals(Money.dollar(5))
 		refute Money.dollar(5).equals(Money.dollar(6))
-		assert Money.franc(5).equals(Money.franc(5))
-		refute Money.franc(5).equals(Money.franc(6))
 		refute Money.franc(5).equals(Money.dollar(5))
 	end
 
@@ -21,19 +19,9 @@ class MoneyTest < MiniTest::Unit::TestCase
 	  refute Money.dollar(5) == (Money.dollar(6))
 	end
 
-	def test_franc_multiplication
-		five = Money.franc(5)
-		assert_equal Money.franc(10), five.times(2)
-		assert_equal Money.franc(15), five.times(3)
-	end
-
 	def test_currency
 		assert_equal 'USD', Money.dollar(1).currency()
 		assert_equal 'CHF', Money.franc(1).currency()
-	end
-
-	def test_different_class_equality
-		assert Money.new(10,'CHF') == Franc.new(10, 'CHF')
 	end
 end
 
@@ -46,11 +34,11 @@ class Money
 	end
 
 	def self.dollar(amount)
-		Dollar.new(amount, 'USD')
+		Money.new(amount, 'USD')
 	end
 
 	def self.franc(amount)
-		Franc.new(amount, 'CHF')
+		Money.new(amount, 'CHF')
 	end
 	
 	def ==(object)
@@ -61,10 +49,4 @@ class Money
 	def times(multiplier)
 		Money.new(@amount*multiplier, @currency)
 	end
-end
-
-class Dollar < Money
-end
-
-class Franc < Money
 end
