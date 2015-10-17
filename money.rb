@@ -71,8 +71,28 @@ class MoneyTest < MiniTest::Unit::TestCase
     result = bank.reduce(fiveBucks.plus(tenFrancs), 'USD')
     assert_equal Money.dollar(10), result
   end
-end
 
+  def test_sum_plus_money
+    fiveBucks = Money.dollar(5)
+    tenFrancs = Money.franc(10)
+    bank = Bank.new
+    bank.add_rate('CHF', 'USD', 2)
+    sum  = Sum.new(fiveBucks, tenFrancs).plus(fiveBucks)
+    result = bank.reduce(sum, 'USD')
+    assert_equal Money.dollar(15), result
+  end
+
+  def test_sum_times
+    fiveBucks = Money.dollar(5)
+    tenFrancs = Money.franc(10)
+    bank = Bank.new
+    bank.add_rate('CHF', 'USD', 2)
+    sum  = Sum.new(fiveBucks, tenFrancs).times(2)
+    result = bank.reduce(sum, 'USD')
+    assert_equal Money.dollar(20), result
+  end
+
+end
 class Money
 	attr_reader :amount, :currency
 	
@@ -100,7 +120,7 @@ class Money
 
 	def +(addend)
     Sum.new(self, addend)
-	end
+  end
 	alias :plus :+
 
   def reduce(bank, to)
@@ -161,7 +181,12 @@ class Sum
   end
 
   def +(addend)
-    nil
+    Sum.new(self, addend)
+  end
+  alias :plus :+
+
+  def times(multiplier)
+    Sum.new(@augend.times(multiplier), @addend.times(multiplier))
   end
 end
 
