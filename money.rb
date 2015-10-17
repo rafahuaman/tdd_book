@@ -62,6 +62,15 @@ class MoneyTest < MiniTest::Unit::TestCase
   def test_identity_rate
     assert_equal 1, Bank.new().rate('USD','USD')
   end
+
+  def test_add_mixed_addition
+    fiveBucks = Money.dollar(5)
+    tenFrancs = Money.franc(10)
+    bank = Bank.new
+    bank.add_rate('CHF', 'USD', 2)
+    result = bank.reduce(fiveBucks.plus(tenFrancs), 'USD')
+    assert_equal Money.dollar(10), result
+  end
 end
 
 class Money
@@ -147,8 +156,12 @@ class Sum
   end
 
   def reduce(bank, to)
-    amount = @augend.amount + @addend.amount
+    amount = @augend.reduce(bank,to).amount  + @addend.reduce(bank,to).amount
     Money.new(amount,to)
+  end
+
+  def +(addend)
+    nil
   end
 end
 
