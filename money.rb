@@ -30,7 +30,27 @@ class MoneyTest < MiniTest::Unit::TestCase
 		bank = Bank.new
 		reduced = bank.reduce(sum, 'USD')
 		assert_equal Money.dollar(10), reduced
-	end
+  end
+
+  def test_plus_returns_sum
+    five = Money.dollar(5)
+    sum = five.plus(five)
+    assert_equal five, sum.augend
+    assert_equal five, sum.addend
+  end
+
+  def test_reduce_sum
+    sum = Sum.new(Money.dollar(3),Money.dollar(4))
+    bank = Bank.new
+    result = bank.reduce(sum, 'USD')
+    assert_equal Money.dollar(7), result
+  end
+
+  def test_reduce_money
+    bank = Bank.new
+    result = bank.reduce(Money.dollar(1), 'USD')
+    assert_equal Money.dollar(1), result
+  end
 end
 
 class Money
@@ -58,14 +78,32 @@ class Money
 		Money.new(@amount*multiplier, @currency)
 	end
 
-	def +(added)
-		return Money.new(@amount + added.amount, @currency)
+	def +(addend)
+    Sum.new(self, addend)
 	end
 	alias :plus :+
+
+  def reduce(to)
+    self
+  end
 end
 
 class Bank
-	def reduce source, to
-		Money.dollar(10)
+	def reduce(source, to)
+    source.reduce(to)
 	end
+end
+
+class Sum
+  attr_reader :augend, :addend
+
+  def initialize(augend, addend)
+    @augend = augend
+    @addend = addend
+  end
+
+  def reduce(to)
+    amount = @augend.amount + @addend.amount
+    Money.new(amount,to)
+  end
 end
